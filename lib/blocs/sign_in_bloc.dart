@@ -73,6 +73,7 @@ class SignInBloc extends ChangeNotifier {
       final newUser = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
       if (newUser.user!.emailVerified) {
+        _uid = newUser.user!.uid;
         _hasError = false;
         _isVeryfy = true;
         notifyListeners();
@@ -156,14 +157,19 @@ class SignInBloc extends ChangeNotifier {
   }
 
   Future getUserDatafromFirebase(uid) async {
+    // print("uid : " + uid);
     await FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
         .get()
         .then((DocumentSnapshot snap) {
-      _uid = snap.get("uid");
-      _name = snap.get("name");
-      _email = snap.get("email");
+      print("nama = " + snap["uid"]);
+      // querySnapshot.docs.forEach((doc) {
+      //   print(doc["first_name"]);
+      // });
+      _uid = snap["uid"];
+      _name = snap["name"];
+      _email = snap["email"];
     });
     notifyListeners();
   }
